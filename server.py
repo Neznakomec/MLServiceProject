@@ -3,6 +3,8 @@ import sqlite3
 import hashlib
 from celery import Celery
 import pathlib
+
+from celery.result import AsyncResult
 from flask import Flask, send_file
 from torchvision.utils import save_image
 
@@ -25,15 +27,6 @@ celery_app = Celery('server', backend='redis://redis', broker='redis://redis')
 
 @app.route('/')  # Function handler for /
 def hello():
-    # generate image
-    # images = model.sample(1).cpu()
-    # img1 = images[0]
-    # save_image(img1, 'img1.png')
-
-    # send image to user
-    # filename = 'img1.png'
-    # return send_file(filename, mimetype='image/png')
-
     return send_file('./templates/index.html')  # "Hello, from Flask"  # Return the string as a response
 
 
@@ -49,6 +42,12 @@ def frequency_check_handler(image_id):
         return send_file(filepath)  # 'Picture in database'
     elif image_id in img_to_task_id:
         task_id = img_to_task_id[image_id]
+        task = AsyncResult(task_id, app=celery_app)
+        print('task state', task)
+        if task.ready():
+            print('task is ready')
+            filename = task.result
+            db.execute('REPLACE INTO CACHE VALUES (?, ?)', [image_id, filename])
         cursor = db.execute('SELECT filename from CACHE')
         all_rows = cursor.fetchall()
         cursor.close()
@@ -63,15 +62,15 @@ def frequency_check_handler(image_id):
 
 @celery_app.task
 def generate_image(image_id):
-    db.execute('REPLACE INTO CACHE VALUES (?, ?)', [1, 1])
+    #db.execute('REPLACE INTO CACHE VALUES (?, ?)', [1, 1])
     images = model.sample(1).cpu()
     img1 = images[0]
 
     new_name = hashlib.sha256(image_id.encode()).hexdigest() + '.png'
     save_image(img1, './temp/' + new_name)
 
-    db.execute('REPLACE INTO CACHE VALUES (?, ?)', [image_id, new_name])
-    return 0
+    #db.execute('REPLACE INTO CACHE VALUES (?, ?)', [image_id, new_name])
+    return new_name
 
 
 if __name__ == '__main__':

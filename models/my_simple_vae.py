@@ -37,7 +37,7 @@ class Encoder(nn.Module):
         self.logvar = nn.Linear(nef*8*out_size*out_size, nz) # YOUR CODE HERE
 
     @staticmethod
-    def reparametrize(mu, logvar):
+    def reparametrize(mu, logvar, device):
         ### return sample from normal distribution using reparametrization trick given MU and LOGVARiance
         ### hint 1: sample has the same shape and logvar and mu variables
         ### hint 2: logvar is diagonal
@@ -59,7 +59,7 @@ class Encoder(nn.Module):
         # Calculate mean and (log)variance
         mean, logvar = self.mean(hidden), self.logvar(hidden) # YOUR CODE HERE
         # Sample
-        latent_z = self.reparametrize(mean, logvar)
+        latent_z = self.reparametrize(mean, logvar, self.device)
 
         return latent_z, mean, logvar
 

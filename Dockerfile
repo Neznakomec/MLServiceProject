@@ -19,4 +19,5 @@ ADD temp $HOME/app/temp
 COPY ./my_trained_models/10epochs_my_vae.pth $HOME/app/my_trained_models/10epochs_my_vae.pth
 
 #ENTRYPOINT ["bash"]
-ENTRYPOINT ["python3", "server.py"]
+CMD ["python3", "server.py"]
+#ENTRYPOINT ["celery -A server:celery_app worker & python3 server.py;"]

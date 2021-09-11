@@ -3,11 +3,18 @@ An attempt to do fine ML service
 
 # How to run
 build a docker container with server:
+
 docker build -t python-server .
+
 (it may take a long time, because donwloading large base container of pytorch)
 
 run pytorch container and redis container:
+
 docker-compose up
+
+TODO: fix request with celery http://localhost:9999/image/generateme
+
+
 
 A simplified version of
 # Deep Feature Consistent Variational Autoencoder in PyTorch

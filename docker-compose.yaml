@@ -15,7 +15,7 @@ services:
     restart: always
     build:
       context: .
-    command: celery worker -A server:celery_app -c 2 > log-worker.txt
+    command: celery -A server:celery_app worker -c 2 > log-worker.txt
     depends_on:
       - redis
     ports:
