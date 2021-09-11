@@ -1,0 +1,15 @@
+So, in folder e:\Documents\PycharmProjects\
+i created a "MLFlowServer.sh":
+
+mlflow server \
+    --backend-store-uri sqlite:////mlflow_example.db \
+    --default-artifact-root hdfs://localhost:9000/MlflowOutput \
+    --host 0.0.0.0
+     -p 5000
+
+
+Run it through Git Bash (comes with SourceTree):
+./MLFlowServer.sh
+
+then, db file located at "E:\"
+and it created a folder "C:\Users\Username\mlruns"

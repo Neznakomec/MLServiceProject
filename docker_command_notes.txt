@@ -1,0 +1,10 @@
+# ENTRYPOINT ["python3", "/app/server.py"]
+# docker cp server.py frosty_khayyam:/app/server.py
+
+
+
+python3 server.py
+
+
+
+frosty_khayyam

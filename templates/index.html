@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Main page!</title>
+        <link rel="stylesheet"
+            href="{{ url_for('static', path='/style.css') }}">
+    </head>
+    <body>
+        <h3>{{ message }}</h3>
+
+        <p>Enter coefficients of quadratic equation</p>
+
+        <form action="/image/some_id" method="get"
+                enctype="multipart/form-data">
+            a:<br>
+            <input type="text" name="coeff_a"><br>
+                        b:<br>
+            <input type="text" name="coeff_b"><br>
+                        c:<br>
+            <input type="text" name="coeff_c"><br>
+
+            <button type="submit">Plot!</button>
+        </form>
+
+    </body>
+</html>

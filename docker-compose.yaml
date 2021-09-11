@@ -1,0 +1,26 @@
+version: "3.7"
+
+services:
+  server:
+    image: python-server:latest
+    ports:
+      - 9999:8000
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery worker -A server:celery_app -c 2 > log-worker.txt
+    depends_on:
+      - redis
+    ports:
+      - 1234:8000
+
+networks:
+  backnet:
+    external: true    
