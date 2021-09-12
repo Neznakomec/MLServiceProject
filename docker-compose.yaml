@@ -5,6 +5,8 @@ services:
     image: python-server:latest
     ports:
       - 9999:8000
+    volumes:
+      - ./temp:/app/temp
 
   redis:
     image: "redis:alpine"
@@ -15,9 +17,11 @@ services:
     restart: always
     build:
       context: .
-    command: celery -A server:celery_app worker -c 2 > log-worker.txt --pool=solo --loglevel=DEBUG
+    command: celery -A server:celery_app worker --pool=solo --loglevel=DEBUG -c 2 > log-worker.txt
     links:
       - redis
+    volumes:
+      - ./temp:/app/temp
     depends_on:
       - redis
       - server

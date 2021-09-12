@@ -14,11 +14,12 @@ ADD utils $HOME/app/utils
 ADD models $HOME/app/models
 ADD static $HOME/app/static
 ADD templates $HOME/app/templates
-ADD temp $HOME/app/temp
+#ADD temp $HOME/app/temp
 
 COPY ./my_trained_models/10epochs_my_vae.pth $HOME/app/my_trained_models/10epochs_my_vae.pth
 
 #ENTRYPOINT ["bash"]
-CMD ['celery', '-A', 'server:celery_app', 'worker', '-c 2 > log-worker.txt', '--loglevel=DEBUG']
+#CMD ['celery', '-A', 'server:celery_app', 'worker', '--pool=solo', '--loglevel=DEBUG', '-c 2 > log-worker.txt', '&&', 'python3', 'server.py']
+CMD ['celery', '-A', 'server:celery_app', 'worker', '--pool=solo', '--loglevel=DEBUG', '-c 2 > log-worker.txt']
 CMD ["python3", "server.py"]
-#ENTRYPOINT ["celery -A server:celery_app worker & python3 server.py;"]
+#ENTRYPOINT ["celery -A server:celery_app worker --pool=solo --loglevel=DEBUG -c 2 > log-worker.txt; python3 server.py"]
