@@ -10,9 +10,11 @@ docker build -t python-server .
 
 run pytorch container and redis container:
 
-docker-compose up
+docker-compose up --build
 
-TODO: fix request with celery http://localhost:9999/image/generateme
+Then open the page http://localhost:9999/ to see example of image generation
+
+~TODO: fix request with celery http://localhost:9999/image/generateme~
 
 
 

@@ -5,7 +5,8 @@ from celery import Celery
 import pathlib
 
 from celery.result import AsyncResult
-from flask import Flask, send_file
+from flask import Flask, send_file, redirect
+from flask import request
 from torchvision.utils import save_image
 
 from models.my_simple_vae import VAE
@@ -19,6 +20,7 @@ MODEL_PATH = "./my_trained_models/10epochs_my_vae.pth"
 device = torch.device("cpu")
 model = VAE(device=device)
 model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
+
 db = sqlite3.connect('./db/cache.db', check_same_thread=False)
 
 img_to_task_id = {}
@@ -31,6 +33,15 @@ celery_app = Celery('server', backend='redis://redis', broker='redis://redis')
 @app.route('/')  # Function handler for /
 def hello():
     return send_file('./templates/index.html')  # "Hello, from Flask"  # Return the string as a response
+
+
+@app.route('/redirect_to_image_generation', methods=['POST'])  # Function handler for /redirect_to_image_generation
+def image_gen_entry_point():
+    name_of_image = request.values['image_name']
+    if len(name_of_image) > 0:
+        print('redirecting...')
+        return redirect('/image/' + name_of_image)
+    return redirect('/')
 
 
 @app.route("/image/<image_id>")
@@ -51,16 +62,17 @@ def frequency_check_handler(image_id):
             print('task is ready')
             filename = task.result
             db.execute('REPLACE INTO CACHE VALUES (?, ?)', [image_id, filename])
+            return 'Thank you for using my "Blindr 2.0", please refresh the page to see Neural Network generated ' \
+                   'picture! '
         cursor = db.execute('SELECT filename from CACHE')
         all_rows = cursor.fetchall()
         cursor.close()
-        return 'running ' + task_id + ' rows = ' + str(rows) + ' allrows = ' + str(all_rows)
+        return 'running ' + task_id + ', please refresh page!     DEBUG info, rows = ' + str(rows) + ' allrows = ' + str(all_rows)
     else:
-        # task = AsyncResult(task_id, app=celery_app)
         task = generate_image.delay(image_id)
         # generate_image(image_id)
         img_to_task_id[image_id] = task.id
-        return 'Picture unknown, created task ' + img_to_task_id[image_id]
+        return f'Picture "{image_id}" is not in our collection, we generating it with task number ' + img_to_task_id[image_id]
 
 
 @celery_app.task

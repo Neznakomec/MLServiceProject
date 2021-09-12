@@ -5,20 +5,33 @@
             href="{{ url_for('static', path='/style.css') }}">
     </head>
     <body>
-        <h3>{{ message }}</h3>
+<!--        <h3>{{ message }}</h3>-->
 
-        <p>Enter coefficients of quadratic equation</p>
+<!--        <p>Enter coefficients of quadratic equation</p>-->
 
-        <form action="/image/some_id" method="get"
+<!--        <form action="/image/some_id" method="get"-->
+<!--                enctype="multipart/form-data">-->
+<!--            a:<br>-->
+<!--            <input type="text" name="coeff_a"><br>-->
+<!--                        b:<br>-->
+<!--            <input type="text" name="coeff_b"><br>-->
+<!--                        c:<br>-->
+<!--            <input type="text" name="coeff_c"><br>-->
+
+<!--            <button type="submit">Plot!</button>-->
+<!--        </form>-->
+
+            <h3>{{ message }}</h3>
+
+        <p>Enter picture name to generate:</p>
+
+        <form action="/redirect_to_image_generation" method="post"
                 enctype="multipart/form-data">
-            a:<br>
-            <input type="text" name="coeff_a"><br>
-                        b:<br>
-            <input type="text" name="coeff_b"><br>
-                        c:<br>
-            <input type="text" name="coeff_c"><br>
+            Name:<br>
+            <input type="text" name="image_name"><br>
+                        Then press a button to generate the image!<br>
 
-            <button type="submit">Plot!</button>
+            <button type="submit">Generate the image!</button>
         </form>
 
     </body>
