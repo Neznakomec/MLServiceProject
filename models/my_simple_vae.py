@@ -70,6 +70,7 @@ class Decoder(nn.Module):
         # Map the latent vector to the feature map space
         self.ndf = ndf
         self.out_size = isize // 16
+        print(f'Initing decoder_dense nn.Linear({nz} -> {self.ndf*8*self.out_size*self.out_size})')
         self.decoder_dense = nn.Sequential(
             nn.Linear(nz, ndf*8*self.out_size*self.out_size),
             nn.ReLU(True)
@@ -95,11 +96,20 @@ class Decoder(nn.Module):
         ) # YOUR CODE HERE
 
     def forward(self, input):
+        print('decoder.forward enter')
         batch_size = input.size(0)
-        hidden = self.decoder_dense(input).view(
+        print('decoder.forward 2')
+        print('input.shape', input.shape)
+        print('dense', self.decoder_dense)
+        # print(f'nn.Linear({self.nz} -> {self.ndf*8*self.out_size*self.out_size}')
+        dense = self.decoder_dense(input)
+        print('decoder.forward 3')
+        hidden = dense.view(
             batch_size, self.ndf*8, self.out_size, self.out_size)
+        print('decoder.forward 4')
         output = self.decoder_conv(hidden) # YOUR CODE HERE 
         return output # reconstructed image
+
 
 class VAE(nn.Module):
     def __init__(self, nc=3, ndf=32, nef=32, nz=100, isize=64, device=torch.device("cuda:0"), is_train=True):
@@ -141,8 +151,11 @@ class VAE(nn.Module):
 
     def sample(self, size):
         # generate random sample z from prior p(z) and pass through the decoder. It will be your new generated sample
+        print('sample 1/3')
         z = torch.randn((size, self.nz), device=self.encoder.device)
+        print('sample 2/3')
         samples = self.decoder(z)
+        print('sample 3/3')
         return samples # YOUR CODE HERE
     
     @property

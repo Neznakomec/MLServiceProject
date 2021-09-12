@@ -7,7 +7,7 @@ services:
       - 9999:8000
 
   redis:
-    image: "redis:alpine"
+    image: "redis"
     ports:
       - 6379:6379
 
@@ -15,12 +15,11 @@ services:
     restart: always
     build:
       context: .
-    command: celery -A server:celery_app worker -c 2 > log-worker.txt --pool=solo --loglevel=DEBUG
-    links:
-      - redis
+    command: celery -A server:celery_app worker -c 2 > log-worker.txt
     depends_on:
       - redis
-      - server
+    ports:
+      - 1234:8000
 
 networks:
   backnet:

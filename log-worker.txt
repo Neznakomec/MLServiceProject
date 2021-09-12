@@ -1,0 +1,18 @@
+Inside docker: True
+Script running at E:\Documents\PycharmProjects\LSML2\Week6\MLServiceProject
+ 
+ -------------- celery@FENICS v5.1.2 (sun-harmonics)
+--- ***** ----- 
+-- ******* ---- Windows-10-10.0.19041-SP0 2021-09-12 11:05:52
+- *** --- * --- 
+- ** ---------- [config]
+- ** ---------- .> app:         server:0x273f7835400
+- ** ---------- .> transport:   redis://127.0.0.1:6379/0
+- ** ---------- .> results:     redis://127.0.0.1:6379/0
+- *** --- * --- .> concurrency: 2 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+                
+

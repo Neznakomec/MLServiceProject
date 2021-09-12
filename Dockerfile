@@ -4,7 +4,7 @@ WORKDIR /app
 EXPOSE 8000
 
 RUN pip install Flask
-RUN pip install celery
+RUN pip install celery[redis]
 RUN pip install redis
 
 COPY server.py /app/server.py
@@ -19,5 +19,6 @@ ADD temp $HOME/app/temp
 COPY ./my_trained_models/10epochs_my_vae.pth $HOME/app/my_trained_models/10epochs_my_vae.pth
 
 #ENTRYPOINT ["bash"]
+CMD ['celery', '-A', 'server:celery_app', 'worker', '-c 2 > log-worker.txt', '--loglevel=DEBUG']
 CMD ["python3", "server.py"]
 #ENTRYPOINT ["celery -A server:celery_app worker & python3 server.py;"]

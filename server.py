@@ -23,6 +23,9 @@ db = sqlite3.connect('./db/cache.db', check_same_thread=False)
 
 img_to_task_id = {}
 celery_app = Celery('server', backend='redis://redis', broker='redis://redis')
+# celery_app = Celery('server', backend='redis://127.0.0.1:6379/0', broker='redis://127.0.0.1:6379/0')
+# celery_app.conf.broker_url = 'redis://127.0.0.1:6379/0'
+# celery_app.conf.result_backend = 'redis://127.0.0.1:6379/0'
 
 
 @app.route('/')  # Function handler for /
@@ -62,12 +65,20 @@ def frequency_check_handler(image_id):
 
 @celery_app.task
 def generate_image(image_id):
+    print('Hello from generate_image')
+    try:
+        print('sampling started')
+        images = model.sample(1).cpu()
+        print('sampling finished')
+        img1 = images[0]
+    except Exception as ex:
+        print('exception happened')
+        print(ex)
     #db.execute('REPLACE INTO CACHE VALUES (?, ?)', [1, 1])
-    images = model.sample(1).cpu()
-    img1 = images[0]
 
     new_name = hashlib.sha256(image_id.encode()).hexdigest() + '.png'
     save_image(img1, './temp/' + new_name)
+    print('image saved')
 
     #db.execute('REPLACE INTO CACHE VALUES (?, ?)', [image_id, new_name])
     return new_name
