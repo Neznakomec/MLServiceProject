@@ -3,15 +3,15 @@ An attempt to do fine ML service
 
 # How to run
 build a docker container with server:
-
+```
 docker build -t python-server .
-
+```
 (it may take a long time, because donwloading large base container of pytorch)
 
 run pytorch container and redis container:
-
+```
 docker-compose up --build
-
+```
 Then open the page http://localhost:9999/ to see example of image generation
 
 ~TODO: fix request with celery http://localhost:9999/image/generateme~
